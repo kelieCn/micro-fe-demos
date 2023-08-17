@@ -20,7 +20,9 @@ export default defineConfig({
       name: 'single-spa-app1',
       formats: ['umd'],
     },
+    minify: false,
   },
+  base: 'http://localhost:4000/',
   preview: {
     port: 4000,
     cors: {
