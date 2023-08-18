@@ -47,7 +47,9 @@ const loadApp = (host:string, appName:any) => {
   // 远程加载子应用
   return async () => {
     //手动挂载子应用
-    await mountAppStyle(`${host}/style.css`)
+    try {
+      await mountAppStyle(`${host}/style.css`)
+    } catch { /*  */ }
     await mountApp(`${host}/${appName}.umd.cjs`)
     // 获取子应用生命周期函数
     return window[appName] as any
@@ -69,6 +71,7 @@ const microList:RegisterApplicationConfig[] = [
     activeWhen: '/app2',
     customProps: {
       ...action,
+      base: '/app2',
     }
   },
 ]

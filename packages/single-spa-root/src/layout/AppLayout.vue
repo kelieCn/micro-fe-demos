@@ -17,13 +17,15 @@
           class="sider-menu"
           v-model:selectedKeys="selectedKeys"
         >
-          <MenuItem key="/app1" @click="toApp('/app1')">
-            <template #icon><IconCode/></template>
-            子应用app1
-          </MenuItem>
-          <MenuItem key="/app2" @click="toApp('/app2')">
-            <template #icon><IconCodeBlock/></template>
-            子应用app2
+          <MenuItem
+            v-for="item in menus"
+            :key="item.path"
+            @click="toApp(item.path)"
+          >
+            <template #icon>
+              <component :is="item.iconCmp" />
+            </template>
+            {{ item.appName }}
           </MenuItem>
         </Menu>
         <template #trigger="{ collapsed }">
@@ -66,6 +68,18 @@
 
   const collapsed = ref(false)
   const selectedKeys = ref<string[]>([])
+  const menus = [
+    {
+      path: '/app1',
+      appName: '子应用app1',
+      iconCmp: IconCode,
+    },
+    {
+      path: '/app2',
+      appName: '子应用app2',
+      iconCmp: IconCodeBlock,
+    },
+  ]
   function onCollapse() {
     collapsed.value = !collapsed.value
   }
@@ -74,8 +88,9 @@
   }
 
   watch(route, r => {
-    if (selectedKeys.value.includes(r.path)) return
-    selectedKeys.value = [r.path]
+    const path = ['/app1', '/app2'].find(p => r.path.startsWith(p))
+    if (!path) return
+    selectedKeys.value = [path]
   }, {
     immediate: true,
   })
@@ -133,5 +148,9 @@
       padding: 16px;
     }
   }
+}
+#single-spa-app1, #single-spa-app2 {
+  height: 100%;
+  display: none;
 }
 </style>
