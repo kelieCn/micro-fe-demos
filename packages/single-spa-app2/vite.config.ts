@@ -1,21 +1,21 @@
 import path from 'path'
 import { defineConfig, UserConfig, mergeConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import { vitePluginForArco } from '@arco-plugins/vite-react'
+import vue from '@vitejs/plugin-vue'
+import { vitePluginForArco } from '@arco-plugins/vite-vue'
 import pkg from './package.json'
 
-const PORT = 4000
+const PORT = 5000
 const baseConfig:UserConfig = {
   server: {
     port: PORT,
   },
   plugins: [
-    react(),
+    vue(),
     vitePluginForArco({ style: 'css' }),
   ],
   build: {
     lib: {
-      entry: path.join(__dirname, './src/main.tsx'),
+      entry: path.join(__dirname, './src/main.ts'),
       name: pkg.name,
       formats: ['umd'],
     },
@@ -45,3 +45,4 @@ export default defineConfig(({ command }) => {
   }
   return mergeConfig(baseConfig, envConfig)
 })
+

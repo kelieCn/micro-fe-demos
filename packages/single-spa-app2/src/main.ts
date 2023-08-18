@@ -1,25 +1,20 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App.tsx'
+import { createApp, version } from 'vue'
+import App from './App.vue'
 
 export const bootstrap = ()  => {
   return Promise.resolve()
 }
 
-let app:ReactDOM.Root | undefined
+let app:ReturnType<typeof createApp> | undefined
 export const mount = (props:any) => {
   const { name, setGlobalState } = props
   setGlobalState({
-    frame: 'React',
-    frameVersion: React.version,
+    frame: 'Vue',
+    frameVersion: version,
   })
 
-  app = ReactDOM.createRoot(document.querySelector(`#${name}`)!)
-  app.render(
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>
-  )
+  app = createApp(App)
+  app.mount(`#${name}`)
   return Promise.resolve()
 }
 

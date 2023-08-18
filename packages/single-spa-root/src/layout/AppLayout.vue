@@ -5,8 +5,8 @@
         <img src="https://zh-hans.single-spa.js.org/img/logo-white-bgblue.svg" alt="">
         <TypographyTitle :heading="4" style="margin: 0;">single-spa</TypographyTitle>
       </Space>
-      <TypographyText code>当前渲染的子应用框架为: react</TypographyText>
-      <TypographyText code>子应用框架版本: v18</TypographyText>
+      <TypographyText code>当前渲染的子应用框架为: {{ state.value.frame }}</TypographyText>
+      <TypographyText code>子应用框架版本: v{{ state.value.frameVersion }}</TypographyText>
     </LayoutHeader>
     <Layout class="center-layout">
       <LayoutSider
@@ -15,14 +15,13 @@
       >
         <Menu
           class="sider-menu"
-          :default-open-keys="['1']"
-          :default-selected-keys="['vue']"
+          v-model:selectedKeys="selectedKeys"
         >
-          <MenuItem key="vue">
+          <MenuItem key="/app1" @click="toApp('/app1')">
             <template #icon><IconCode/></template>
             子应用app1
           </MenuItem>
-          <MenuItem key="react">
+          <MenuItem key="/app2" @click="toApp('/app2')">
             <template #icon><IconCodeBlock/></template>
             子应用app2
           </MenuItem>
@@ -44,7 +43,8 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref } from "vue"
+  import { ref, Ref, watch } from "vue"
+  import { useRouter, useRoute } from 'vue-router'
   import {
     Layout, LayoutHeader, LayoutSider, LayoutContent, Menu, MenuItem, Space, TypographyTitle,
     TypographyText,
@@ -57,11 +57,28 @@
   defineOptions({
     name: 'AppLayout',
   })
+  defineProps<{
+    state: Ref<{ frame:string; frameVersion:string }>
+  }>()
+
+  const router = useRouter()
+  const route = useRoute()
 
   const collapsed = ref(false)
+  const selectedKeys = ref<string[]>([])
   function onCollapse() {
     collapsed.value = !collapsed.value
   }
+  function toApp(path:string) {
+    router.push(path)
+  }
+
+  watch(route, r => {
+    if (selectedKeys.value.includes(r.path)) return
+    selectedKeys.value = [r.path]
+  }, {
+    immediate: true,
+  })
 </script>
 
 <style lang="less" scoped>
